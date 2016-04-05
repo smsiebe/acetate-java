@@ -13,50 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.java.model;
+package org.geoint.acetate.java.format;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a java class as a domain data value.
- *
- * @author steve_siebert
+ * Defines a default codec for a content type.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-public @interface DomainValue {
+@Inherited
+@Repeatable(Codecs.class)
+public @interface Codec {
 
-    /**
-     * DomainResource namespace.
-     *
-     * @return domain namespace
-     */
-    String namespace();
+    Class<? extends ObjectCodec> codec();
 
-    /**
-     * Resource version.
-     *
-     * @return version as string
-     */
-    String version();
-
-    /**
-     * DomainResource-unique version type.
-     *
-     * @return version type
-     */
-    String type();
-
-    /**
-     * Optional resource description.
-     *
-     * @return optional resource description.
-     */
-    String description() default "";
-
+    String contentType();
 }

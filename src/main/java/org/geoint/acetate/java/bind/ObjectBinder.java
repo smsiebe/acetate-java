@@ -15,7 +15,8 @@
  */
 package org.geoint.acetate.java.bind;
 
-import org.geoint.acetate.ResourceInstance;
+import org.geoint.acetate.TypeInstance;
+import org.geoint.acetate.model.TypeDescriptor;
 
 /**
  * Binds a resource to a java object.
@@ -29,11 +30,33 @@ import org.geoint.acetate.ResourceInstance;
 public interface ObjectBinder<T> {
 
     /**
-     * Convert a resource instance to a java object.
+     * Check if a binder can convert between the domain type and java class.
      *
-     * @param resource resource instance
-     * @return java object representation
+     * @param type domain type
+     * @param clazz java class
+     * @return true if the binder can support this pair
      */
-    T bind(ResourceInstance resource);
+    boolean supports(TypeDescriptor type, Class<? super T> clazz);
+
+    /**
+     * Returns a java object representation of a domain type instance.
+     * <p>
+     * Note this method does not specify if the returned object must be newly
+     * constructed or may be returned from cache. This is an
+     * implementation-specific detail.
+     *
+     * @param instance domain instance
+     * @return java object representation of the domain instance
+     */
+    T asObject(TypeInstance instance);
+
+    /**
+     * Returns an TypeInstance implementation that provides access to domain
+     * defined data and behavior.
+     *
+     * @param object source object
+     * @return domain type instance
+     */
+    TypeInstance asType(T object);
 
 }

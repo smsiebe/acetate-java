@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.java.serialization;
+package org.geoint.acetate.java.format;
 
-import org.geoint.acetate.model.TypeModel;
-import org.geoint.acetate.serialization.TypeDeserializer;
+import java.io.IOException;
+import java.io.OutputStream;
 import org.geoint.acetate.java.TypeObject;
+import org.geoint.acetate.model.TypeDescriptor;
 
 /**
- * Deserializes formatted data to a java object representing a domain value.
  *
- * @author steve_siebert
- * @param <T> java class representing a domain value instance
+ * @param <T>
  */
-public interface ObjectDeserializer<T> 
-        extends TypeDeserializer<TypeObject<T, TypeModel>> {
+public interface ObjectFormatter<T> {
 
-    
+    TypeDescriptor[] getSupportedTypes();
+
+    String getSupportedFormat();
+
+    void format(TypeObject object, OutputStream out) throws IOException;
 }

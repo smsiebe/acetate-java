@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.java.serialization;
+package org.geoint.acetate.java.format;
 
-import org.geoint.acetate.model.TypeModel;
-import org.geoint.acetate.serialization.TypeSerializer;
-import org.geoint.acetate.java.TypeObject;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Serializes a java object representing a domain value to the specified format.
- *
- * @author steve_siebert
- * @param <T> java class representing a domain value
+ * Collection of default codecs to use for a domain type.
+ * 
+ * @see Codec
  */
-public interface ObjectSerializer<T> extends TypeSerializer<TypeObject<T, TypeModel>> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Inherited
+public @interface Codecs {
 
+    Codec[] value();
 }

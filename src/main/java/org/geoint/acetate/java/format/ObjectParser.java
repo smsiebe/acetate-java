@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.java.serialization;
+package org.geoint.acetate.java.format;
+
+import java.io.IOException;
+import org.geoint.acetate.model.TypeDescriptor;
+import org.geoint.acetate.format.FormattedType;
+import org.geoint.acetate.java.TypeObject;
+import org.geoint.acetate.model.DomainType;
 
 /**
- * Serializes functions for a java representation of a domain value instance.
  *
- * @author steve_siebert
- * @param <T> java class representation of a domain value
+ * @param <T>
  */
-public interface ObjectCodec<T>
-        extends ObjectDeserializer<T>, ObjectSerializer<T> {
+public interface ObjectParser<T> {
 
+    TypeDescriptor[] getSupportedTypes();
+
+    String getSupportedFormat();
+
+    TypeObject<T> parse(DomainType type, FormattedType formatted)
+            throws IOException;
 }

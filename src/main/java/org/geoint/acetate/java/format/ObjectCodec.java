@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.geoint.acetate.java.format;
+
 /**
- * Specialized serialization API supporting java language representations
- * of the domain.
+ *
  */
-package org.geoint.acetate.java.serialization;
+public interface ObjectCodec extends ObjectFormatter, ObjectParser {
+
+}
