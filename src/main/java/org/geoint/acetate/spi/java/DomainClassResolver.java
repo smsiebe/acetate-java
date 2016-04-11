@@ -18,7 +18,7 @@ package org.geoint.acetate.spi.java;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
-import org.geoint.acetate.java.model.TypeClass;
+import org.geoint.acetate.model.DomainType;
 
 /**
  * Instances of this extension provide class-to-model and model-to-class
@@ -35,19 +35,17 @@ public interface DomainClassResolver {
     /**
      * Resolve a domain type model for the provided class.
      *
-     * @param <T> java class representation of domain type
      * @param domainClass java class representation of domain type
      * @return the domain models to which this class can be resolved
      */
-    <T> Optional<TypeClass<T>> find(Class<T> domainClass);
+    Optional<DomainType> find(Class<?> domainClass);
 
     /**
      *
-     * @param <T>
      * @param namespace
      * @param type
      * @param version
      * @return
      */
-    <T> Set<TypeClass<T>> find(String namespace, String type, String version);
+    Set<DomainType> find(String namespace, String type, String version);
 }

@@ -47,7 +47,7 @@ public interface ResourceObject<T> extends TypeObject<T>, ResourceInstance {
     public Optional<ValueObjectRef<?>> findAttribute(String attributeName);
 
     @Override
-    public Set<ValueObjectRef<?>> getAttributes();
+    public Set<ValueObjectRef<?>> getComposites();
 
     @Override
     public Optional<String> getPreviousResourceVersion();

@@ -16,7 +16,6 @@
 package org.geoint.acetate.java.repo;
 
 import java.util.Optional;
-import org.geoint.acetate.java.model.ResourceClass;
 import org.geoint.acetate.java.ResourceObject;
 
 /**
@@ -26,13 +25,6 @@ import org.geoint.acetate.java.ResourceObject;
  * @param <T> java class representation of a domain resource
  */
 public interface ResourceRepository<T> {
-
-    /**
-     * Model of the resource supported by this repository.
-     *
-     * @return supported resource model
-     */
-    ResourceClass<T> getModel();
 
     /**
      * Return the latest version of the resource instance, or null if no version
@@ -62,16 +54,7 @@ public interface ResourceRepository<T> {
      * @throws UnknownResourceException if the requested resource instance is
      * not know to this repository
      */
-    public default ResourceObject<T> getLatest(String guid)
-            throws UnknownResourceException {
-        return findLatest(guid)
-                .orElseThrow(()
-                        -> new UnknownResourceException(
-                                getModel().getDomainNamespace(),
-                                getModel().getDomainType(),
-                                getModel().getDomainVersion(),
-                                guid, null));
-    }
+    ResourceObject<T> getLatest(String guid) throws UnknownResourceException;
 
     /**
      * Return the requested version of the resource or throws an exception.
@@ -84,21 +67,7 @@ public interface ResourceRepository<T> {
      * @throws InvalidResourceVersionException if the resource is known but the
      * repository does not know of the specific resource version
      */
-    public default ResourceObject<T> get(String guid, String version)
-            throws UnknownResourceException, InvalidResourceVersionException {
-        return find(guid, version)
-                .orElseThrow(() -> new UnknownResourceException(
-                        getModel().getDomainNamespace(),
-                        getModel().getDomainType(),
-                        getModel().getDomainVersion(),
-                        guid, version));
-    }
+    ResourceObject<T> get(String guid, String version)
+            throws UnknownResourceException, InvalidResourceVersionException;
 
-    /**
-     * Adds a resource update handler which will be called on any matching
-     * events.
-     *
-     * @param updater resource updater
-     */
-    void onEvent(ResourceUpdater<T, ?> updater);
 }

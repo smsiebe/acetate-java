@@ -15,7 +15,7 @@
  */
 package org.geoint.acetate.java.repo;
 
-import org.geoint.acetate.model.ResourceModel;
+import org.geoint.acetate.model.ResourceType;
 
 /**
  * Thrown if a requested resource instance is not known to the domain.
@@ -24,40 +24,24 @@ import org.geoint.acetate.model.ResourceModel;
  */
 public class UnknownResourceException extends DomainStateException {
 
-    public UnknownResourceException(ResourceModel model,
+    public UnknownResourceException(Class<?> resourceClass,
             String instanceGuid, String instanceVersion) {
-        super(message(model.getDomainNamespace(), model.getDomainType(),
-                model.getDomainVersion(), instanceGuid,
+        super(message(resourceClass, instanceGuid,
                 instanceVersion));
     }
 
-    public UnknownResourceException(String namespace, String domainType,
-            String domainVersion, String instanceGuid, String instanceVersion) {
-        super(message(namespace, domainType, domainVersion, instanceGuid,
-                instanceVersion));
-    }
-
-    public UnknownResourceException(ResourceModel model,
+    public UnknownResourceException(Class<?> resourceClass,
             String instanceGuid, String instanceVersion,
             Throwable cause) {
-        super(message(model.getDomainNamespace(), model.getDomainType(),
-                model.getDomainVersion(), instanceGuid,
+        super(message(resourceClass, instanceGuid,
                 instanceVersion), cause);
     }
 
-    public UnknownResourceException(String namespace, String domainType,
-            String domainVersion, String instanceGuid, String instanceVersion,
-            Throwable cause) {
-        super(message(namespace, domainType, domainVersion, instanceGuid,
-                instanceVersion), cause);
-    }
-
-    public static String message(String namespace, String domainType,
-            String domainVersion, String instanceGuid, String instanceVersion) {
-        return String.format("Unknown resource '%s-%s' of type '%s.%s-%s'",
+    public static String message(Class<?> resourceClass, String instanceGuid, String instanceVersion) {
+        return String.format("Unknown resource '%s-%s' of type '%s'",
                 instanceGuid,
                 (instanceVersion == null) ? "latest" : instanceVersion,
-                namespace, domainType, domainVersion);
+                resourceClass);
     }
 
 }
