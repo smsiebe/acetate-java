@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.java.event;
+package org.geoint.acetate.java.model;
+
+import org.geoint.acetate.java.model.DomainEvent;
 
 /**
- * Source of domain events.
  *
  * @author steve_siebert
  */
-@FunctionalInterface
-public interface EventSource {
+@DomainEvent(namespace = MockAnnotatedResource.MOCK_NAMESPACE,
+        version = MockAnnotatedResource.MOCK_VERSION,
+        type = "MockOperationResponse")
+public class MockAnnotatedEvent {
 
-    /**
-     * Callback that is notified of events as they become available from the
-     * source.
-     *
-     * @param handler event handler
-     */
-    void subscribe(EventHandler handler);
 }

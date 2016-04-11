@@ -16,7 +16,7 @@
 package org.geoint.acetate.java.repo;
 
 import java.util.Optional;
-import org.geoint.acetate.java.ResourceObject;
+import org.geoint.acetate.java.bind.ResourceObject;
 
 /**
  * Version-controlled storage of domain resource objects.

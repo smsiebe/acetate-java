@@ -15,12 +15,12 @@
  */
 package org.geoint.acetate.java.model.reflect;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import org.geoint.acetate.NotDomainResourceException;
-import org.geoint.acetate.java.InvalidDomainMethodException;
-import org.geoint.acetate.java.model.Accessor;
-import org.geoint.acetate.model.InvalidModelException;
+//import java.lang.reflect.Method;
+//import java.lang.reflect.Type;
+//import org.geoint.acetate.NotDomainResourceException;
+//import org.geoint.acetate.java.InvalidDomainMethodException;
+//import org.geoint.acetate.java.model.Accessor;
+//import org.geoint.acetate.model.InvalidModelException;
 
 /**
  * Models an accessor method, which provides a reference to another domain type.
@@ -31,71 +31,72 @@ import org.geoint.acetate.model.InvalidModelException;
  * @param <R> java class representation of the domain type returned by this
  * accessor
  */
-public class ReflectedAccessorMethod<T, R> extends ReflectedTypeRef<ReflectedTypeClass<R>> {
-
-    private final Class<T> domainClass;
-    private final Method method;
-
-    protected ReflectedAccessorMethod(String name, String description, boolean multi,
-            Class<T> resourceClass, Method method,
-            ReflectedTypeClass<R> ref) {
-        super(name, description, ref, multi);
-        this.domainClass = resourceClass;
-        this.method = method;
-    }
-
-    public static <T> ReflectedAccessorMethod<T, ?> forMethod(
-            String domainNamespace, String domainType, String domainVersion,
-            Class<T> domainClass,
-            Method accessorMethod)
-            throws InvalidModelException {
-
-        if (accessorMethod.getParameterCount() > 0) {
-            throw new InvalidDomainMethodException(domainNamespace,
-                    domainType, domainVersion, domainClass, accessorMethod,
-                    "Domain accessor method must not require parameters.");
-        }
-
-        Accessor a = accessorMethod.getAnnotation(Accessor.class);
-
-        if (a == null) {
-            throw new InvalidDomainMethodException(domainNamespace,
-                    domainType, domainVersion, domainClass, accessorMethod,
-                    "Domain accessor method must be annotated with @Accessor.");
-        }
-
-        Type returnType = accessorMethod.getGenericReturnType();
-        Class<?> returnClass;
-        boolean isCollection = DomainReflectionUtil.isCollection(returnType);
-        if (isCollection) {
-            returnClass= DomainReflectionUtil.getCollectionClass(returnType);
-        } else if ()
-        //TODO support array and map here too
-     
-
-        try {
-            ReflectedTypeClass<?> returnModel = DomainReflectionUtil.model(returnClass);
-
-            return new ReflectedAccessorMethod(
-                    a.name(),
-                    a.description(),
-                    isCollection,
-                    domainClass,
-                    accessorMethod,
-                    returnModel);
-        } catch (NotDomainResourceException ex) {
-            throw new InvalidDomainMethodException(domainNamespace,
-                    domainType, domainVersion, domainClass, accessorMethod,
-                    "Domain accessor method must return a domain type.", ex);
-        }
-    }
-
-    public Class<T> getResourceClass() {
-        return domainClass;
-    }
-
-    public Method getMethod() {
-        return method;
-    }
+public class ReflectedAccessorMethod<T, R> {
+//extends ReflectedTypeRef<ReflectedTypeClass<R>> {
+//
+//    private final Class<T> domainClass;
+//    private final Method method;
+//
+//    protected ReflectedAccessorMethod(String name, String description, boolean multi,
+//            Class<T> resourceClass, Method method,
+//            ReflectedTypeClass<R> ref) {
+//        super(name, description, ref, multi);
+//        this.domainClass = resourceClass;
+//        this.method = method;
+//    }
+//
+//    public static <T> ReflectedAccessorMethod<T, ?> forMethod(
+//            String domainNamespace, String domainType, String domainVersion,
+//            Class<T> domainClass,
+//            Method accessorMethod)
+//            throws InvalidModelException {
+//
+//        if (accessorMethod.getParameterCount() > 0) {
+//            throw new InvalidDomainMethodException(domainNamespace,
+//                    domainType, domainVersion, domainClass, accessorMethod,
+//                    "Domain accessor method must not require parameters.");
+//        }
+//
+//        Accessor a = accessorMethod.getAnnotation(Accessor.class);
+//
+//        if (a == null) {
+//            throw new InvalidDomainMethodException(domainNamespace,
+//                    domainType, domainVersion, domainClass, accessorMethod,
+//                    "Domain accessor method must be annotated with @Accessor.");
+//        }
+//
+//        Type returnType = accessorMethod.getGenericReturnType();
+//        Class<?> returnClass;
+//        boolean isCollection = DomainReflectionUtil.isCollection(returnType);
+//        if (isCollection) {
+//            returnClass= DomainReflectionUtil.getCollectionClass(returnType);
+//        } else if ()
+//        //TODO support array and map here too
+//     
+//
+//        try {
+//            ReflectedTypeClass<?> returnModel = DomainReflectionUtil.model(returnClass);
+//
+//            return new ReflectedAccessorMethod(
+//                    a.name(),
+//                    a.description(),
+//                    isCollection,
+//                    domainClass,
+//                    accessorMethod,
+//                    returnModel);
+//        } catch (NotDomainResourceException ex) {
+//            throw new InvalidDomainMethodException(domainNamespace,
+//                    domainType, domainVersion, domainClass, accessorMethod,
+//                    "Domain accessor method must return a domain type.", ex);
+//        }
+//    }
+//
+//    public Class<T> getResourceClass() {
+//        return domainClass;
+//    }
+//
+//    public Method getMethod() {
+//        return method;
+//    }
 
 }

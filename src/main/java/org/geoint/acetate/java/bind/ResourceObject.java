@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.java.format;
+package org.geoint.acetate.java.bind;
+
+import org.geoint.acetate.ResourceInstance;
 
 /**
  *
+ * @author steve_siebert
+ * @param <T> java class representation of a domain resource
  */
-public interface ObjectCodec extends ObjectFormatter, ObjectParser {
-
+public interface ResourceObject<T> extends ResourceInstance {
+    
 }
