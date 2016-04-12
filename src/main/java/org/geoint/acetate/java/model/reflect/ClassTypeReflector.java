@@ -22,14 +22,22 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
+import org.geoint.acetate.format.TypeFormatter;
+import org.geoint.acetate.format.TypeParser;
 import org.geoint.acetate.functional.ThrowingConsumer;
+import org.geoint.acetate.java.bind.Binder;
+import org.geoint.acetate.java.bind.ObjectBinder;
+import org.geoint.acetate.java.format.ObjectFormatter;
+import org.geoint.acetate.java.format.ObjectParser;
 import org.geoint.acetate.java.model.Accessor;
-import org.geoint.acetate.java.model.ClassTypeResolver;
 import org.geoint.acetate.java.model.DomainEvent;
 import org.geoint.acetate.java.model.DomainResource;
 import org.geoint.acetate.java.model.DomainValue;
+import org.geoint.acetate.java.model.Idempotent;
 import org.geoint.acetate.java.model.Operation;
 import org.geoint.acetate.java.model.Param;
+import org.geoint.acetate.java.model.Safe;
 import org.geoint.acetate.model.DomainBuilder;
 import org.geoint.acetate.model.DomainBuilder.ComposedTypeBuilder;
 import org.geoint.acetate.model.DomainBuilder.EventBuilder;
@@ -37,11 +45,11 @@ import org.geoint.acetate.model.DomainBuilder.OperationBuilder;
 import org.geoint.acetate.model.DomainBuilder.ResourceBuilder;
 import org.geoint.acetate.model.DomainBuilder.ValueBuilder;
 import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.InvalidModelException;
+import org.geoint.acetate.model.TypeDescriptor;
 import org.geoint.acetate.model.DomainType;
 import org.geoint.acetate.model.EventType;
-import org.geoint.acetate.model.InvalidModelException;
 import org.geoint.acetate.model.ResourceType;
-import org.geoint.acetate.model.TypeDescriptor;
 import org.geoint.acetate.model.ValueType;
 
 /**
@@ -57,6 +65,7 @@ public class ClassTypeReflector {
      * annotations to describe the domain model.
      *
      * @param clazz java class representing a domain type
+     * @param builder
      * @return model of the domain type or null if this class does not describe
      * a model
      * @throws InvalidModelException if the class does represent a domain model
@@ -64,16 +73,16 @@ public class ClassTypeReflector {
      * @throws ClassNotDomainTypeException if the class does not represent a
      * domain model type
      */
-    public static DomainType model(Class<?> clazz, ClassTypeResolver resolver)
+    public static DomainType model(Class<?> clazz, DomainBuilder builder)
             throws InvalidModelException, ClassNotDomainTypeException {
         if (clazz.isAnnotationPresent(DomainResource.class)) {
-            return modelResource(clazz, resolver);
+            return modelResource(clazz, builder);
         }
         if (clazz.isAnnotationPresent(DomainEvent.class)) {
-            return modelEvent(clazz, resolver);
+            return modelEvent(clazz, builder);
         }
         if (clazz.isAnnotationPresent(DomainValue.class)) {
-            return modelValue(clazz, resolver);
+            return modelValue(clazz, builder);
         }
         throw new ClassNotDomainTypeException(clazz, "Domain model annotations "
                 + "not found on class definition.");
@@ -83,13 +92,15 @@ public class ClassTypeReflector {
      * Returns the resource model defined by this class.
      *
      * @param clazz class to model
+     * @param builder
      * @return resource model if the class represents a domain resource
      * @throws InvalidModelException thrown if the class definition creates an
      * invalid model
      * @throws ClassNotDomainTypeException if the class does not represent a
      * domain model type
      */
-    protected static ResourceType modelResource(Class<?> clazz, ClassTypeResolver resolver)
+    protected static ResourceType modelResource(Class<?> clazz,
+            DomainBuilder builder)
             throws InvalidModelException, ClassNotDomainTypeException {
 
         DomainResource domain = clazz.getAnnotation(DomainResource.class);
@@ -98,16 +109,14 @@ public class ClassTypeReflector {
                     + "represent a domain resource.");
         }
 
-        DomainBuilder db
-                = new DomainBuilder(domain.namespace(), domain.version(), resolver);
-        ResourceBuilder rb = db.defineResource(domain.type())
+        ResourceBuilder rb = builder.defineResource(domain.type())
                 .withDescription(domain.description());
 
         processDomainMethods(clazz,
                 (m) -> defineAccessor(m, rb),
                 (m) -> defineOperation(m, rb));
 
-        DomainModel model = db.build();
+        DomainModel model = builder.build();
         return model.getResource(domain.type());
     }
 
@@ -115,12 +124,13 @@ public class ClassTypeReflector {
      * Returns the event model defined by this class.
      *
      * @param clazz class to model
+     * @param builder
      * @return event model if the class represents a domain event
      * @throws InvalidModelException thrown if the class definition creates an
      * invalid model
      */
-    protected static EventType modelEvent(Class<?> clazz, ClassTypeResolver resolver)
-            throws InvalidModelException {
+    protected static EventType modelEvent(Class<?> clazz,
+            DomainBuilder builder) throws InvalidModelException {
 
         DomainEvent event = clazz.getAnnotation(DomainEvent.class);
         if (event == null) {
@@ -128,9 +138,7 @@ public class ClassTypeReflector {
                     + "represent a domain event.");
         }
 
-        DomainBuilder db
-                = new DomainBuilder(event.namespace(), event.version(), resolver);
-        EventBuilder eb = db.defineEvent(event.type())
+        EventBuilder eb = builder.defineEvent(event.type())
                 .withDescription(event.description());
         processDomainMethods(clazz,
                 (m) -> defineAccessor(m, eb),
@@ -138,7 +146,7 @@ public class ClassTypeReflector {
                     throw new InvalidDomainMethodException(m, "Event types cannot "
                             + "defined operations.");
                 });
-        DomainModel model = db.build();
+        DomainModel model = builder.build();
         return model.getEvent(event.type());
     }
 
@@ -147,22 +155,22 @@ public class ClassTypeReflector {
      * not define a value model event.
      *
      * @param clazz class to model
+     * @param builder
      * @return value model if the class represents a domain value, otherwise
      * null
      * @throws InvalidModelException thrown if the class definition creates an
      * invalid model
      */
-    protected static ValueType modelValue(Class<?> clazz, ClassTypeResolver resolver)
-            throws InvalidModelException {
+    protected static ValueType modelValue(Class<?> clazz,
+            DomainBuilder builder) throws InvalidModelException {
 
         DomainValue value = clazz.getAnnotation(DomainValue.class);
         if (value == null) {
             throw new ClassNotDomainTypeException(clazz, "Class does not "
                     + "represent a domain value.");
         }
-        DomainBuilder db
-                = new DomainBuilder(value.namespace(), value.version(), resolver);
-        ValueBuilder vb = db.defineValue(value.type())
+
+        ValueBuilder vb = builder.defineValue(value.type())
                 .withDescription(value.description());
         processDomainMethods(clazz,
                 (r) -> {
@@ -173,8 +181,64 @@ public class ClassTypeReflector {
                     throw new InvalidModelException("Event types cannot "
                             + "defined operations.");
                 });
-        DomainModel model = db.build();
+        DomainModel model = builder.build();
         return model.getValue(value.type());
+    }
+
+    /**
+     * Check the class definition for any ObjectBinder definitions.
+     *
+     * @param typeClass
+     * @param consumer
+     * @throws InvalidModelException
+     */
+    public static void binder(Class<?> typeClass, Consumer<ObjectBinder> consumer)
+            throws InvalidModelException {
+        if (!typeClass.isAnnotationPresent(Binder.class)) {
+            return;
+        }
+        Binder binderAnn = typeClass.getAnnotation(Binder.class);
+        try {
+            ObjectBinder binder = binderAnn.value().newInstance();
+            consumer.accept(binder);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            throw new InvalidModelException(String.format("Unable to initialize "
+                    + "ObjectBinder type '%s' for class '%s'",
+                    binderAnn.value().getName(), typeClass.getName()), ex);
+        }
+    }
+
+    public static void formatters(Class<?> typeClass, Consumer<ObjectFormatter> consumer)
+            throws InvalidModelException {
+        if (!typeClass.isAnnotationPresent(DomainValue.class)) {
+            return;
+        }
+        DomainValue valueAnn = typeClass.getAnnotation(DomainValue.class);
+        Class<? extends ObjectFormatter> fClass = valueAnn.defaultFormatter();
+        try {
+            ObjectFormatter formatter = fClass.newInstance();
+            consumer.accept(formatter);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            throw new InvalidModelException(String.format("Unable to initialize "
+                    + "ObjectFormatter type '%s' for class '%s'",
+                    fClass.getName(), typeClass.getName()), ex);
+        }
+    }
+
+    public static void parsers(Class<?> typeClass, Consumer<ObjectParser> consumer) throws InvalidModelException {
+        if (!typeClass.isAnnotationPresent(DomainValue.class)) {
+            return;
+        }
+        DomainValue valueAnn = typeClass.getAnnotation(DomainValue.class);
+        Class<? extends ObjectParser> pClass = valueAnn.defaultParser();
+        try {
+            ObjectParser parser = pClass.newInstance();
+            consumer.accept(parser);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            throw new InvalidModelException(String.format("Unable to initialize "
+                    + "ObjectParser type '%s' for class '%s'",
+                    pClass.getName(), typeClass.getName()), ex);
+        }
     }
 
     protected static void processDomainMethods(Class<?> typeClass,
@@ -232,7 +296,8 @@ public class ClassTypeReflector {
             b.withCompositeType(accessor.name(),
                     value.namespace(),
                     value.version(),
-                    value.type());
+                    value.type())
+                    .build();
         } else if (returnClass.isAnnotationPresent(DomainEvent.class)) {
             //TODO add support for returning event types from accessor
             throw new InvalidDomainMethodException(m, "accessors returning "
@@ -267,6 +332,14 @@ public class ClassTypeReflector {
 
         OperationBuilder ob = b.withOperation(op.name())
                 .withDescription(op.description());
+
+        if (m.isAnnotationPresent(Idempotent.class)) {
+            ob.idempotent();
+        }
+
+        if (m.isAnnotationPresent(Safe.class)) {
+            ob.safe();
+        }
 
         final Class<?> returnClass = m.getReturnType();
         if (returnClass.isAnnotationPresent(DomainEvent.class)) {
@@ -303,9 +376,11 @@ public class ClassTypeReflector {
                     //.isCollection(true)  //TODO add support for collection and map
                     .build();
         }
+
+        ob.build();
     }
 
-    protected static TypeDescriptor getTypeDescriptor(Class<?> domainClass)
+    public static TypeDescriptor getTypeDescriptor(Class<?> domainClass)
             throws InvalidModelException {
         if (domainClass.isAnnotationPresent(DomainResource.class)) {
             DomainResource ann = domainClass.getAnnotation(DomainResource.class);
@@ -356,7 +431,7 @@ public class ClassTypeReflector {
 //                    "Domain operation method must return a domain event type.");
 //        }
 //        final TypeClassRef<?> returnTypeRef = (TypeClassRef) returnNamedRef;
-//        final TypeClass<?> returnType = returnTypeRef.getReferencedType();
+//        final DomainClass<?> returnType = returnTypeRef.getReferencedType();
 //
 //        if (!(returnType instanceof EventClass)) {
 //            throw new InvalidDomainMethodException(resourceNamespace,

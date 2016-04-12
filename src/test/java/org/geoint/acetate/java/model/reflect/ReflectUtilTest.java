@@ -16,7 +16,7 @@
 package org.geoint.acetate.java.model.reflect;
 
 import java.lang.reflect.Type;
-import org.geoint.acetate.java.model.MockAnnotatedResource;
+import org.geoint.acetate.java.model.MockValidResource;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -28,71 +28,71 @@ public class ReflectUtilTest {
 //
 //    @Test
 //    public void testIsMultiArray() throws Exception {
-//        Type arrayType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_ARRAY);
+//        Type arrayType = getMockAccessorType(MockValidResource.ACCESSOR_ARRAY);
 //        assertTrue(DomainReflectionUtil.isMulti(arrayType));
 //    }
 //
 //    @Test
 //    public void testIsMultiCollection() throws Exception {
-//        Type collectionType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_COLLECTION);
+//        Type collectionType = getMockAccessorType(MockValidResource.ACCESSOR_COLLECTION);
 //        assertTrue(DomainReflectionUtil.isMulti(collectionType));
 //    }
 //
 //    @Test
 //    public void testIsMultiMap() throws Exception {
-//        Type mapType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_MAP);
+//        Type mapType = getMockAccessorType(MockValidResource.ACCESSOR_MAP);
 //        assertTrue(DomainReflectionUtil.isMulti(mapType));
 //    }
 //
 //    @Test
 //    public void testIsMap() throws Exception {
-//        Type mapType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_MAP);
+//        Type mapType = getMockAccessorType(MockValidResource.ACCESSOR_MAP);
 //        assertTrue(DomainReflectionUtil.isMap(mapType));
 //    }
 //
 //    @Test
 //    public void testIsArray() throws Exception {
-//        Type arrayType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_ARRAY);
+//        Type arrayType = getMockAccessorType(MockValidResource.ACCESSOR_ARRAY);
 //        assertTrue(DomainReflectionUtil.isArray(arrayType));
 //    }
 //
 //    @Test
 //    public void testIsCollection() throws Exception {
-//        Type collectionType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_COLLECTION);
+//        Type collectionType = getMockAccessorType(MockValidResource.ACCESSOR_COLLECTION);
 //        assertTrue(DomainReflectionUtil.isCollection(collectionType));
 //    }
 //
 //    @Test
 //    public void testGetCollectionClass() throws Exception {
-//        Type collectionType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_COLLECTION);
+//        Type collectionType = getMockAccessorType(MockValidResource.ACCESSOR_COLLECTION);
 //        Class<?> collectionGenericClass = DomainReflectionUtil.getCollectionClass(collectionType);
 //        assertEquals(String.class, collectionGenericClass);
 //    }
 //
 //    @Test
 //    public void testGetArrayClass() throws Exception {
-//        Type arrayType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_ARRAY);
+//        Type arrayType = getMockAccessorType(MockValidResource.ACCESSOR_ARRAY);
 //        Class<?> arrayClass = DomainReflectionUtil.getArrayClass(arrayType);
 //        assertEquals(String.class, arrayClass);
 //    }
 //
 //    @Test
 //    public void testGetMapKeyClass() throws Exception {
-//        Type mapType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_MAP);
+//        Type mapType = getMockAccessorType(MockValidResource.ACCESSOR_MAP);
 //        Class<?> keyClass = DomainReflectionUtil.getMapKeyClass(mapType);
 //        assertEquals(String.class, keyClass);
 //    }
 //
 //    @Test
 //    public void testGetMapValueClass() throws Exception {
-//        Type mapType = getMockAccessorType(MockAnnotatedResource.ACCESSOR_MAP);
+//        Type mapType = getMockAccessorType(MockValidResource.ACCESSOR_MAP);
 //        Class<?> valueClass = DomainReflectionUtil.getMapValueClass(mapType);
 //        assertEquals(Integer.class, valueClass);
 //    }
 //
 //    private Type getMockAccessorType(String accessorName)
 //            throws NoSuchMethodException {
-//        return MockAnnotatedResource.class
+//        return MockValidResource.class
 //                .getMethod(accessorName)
 //                .getGenericReturnType();
 //    }

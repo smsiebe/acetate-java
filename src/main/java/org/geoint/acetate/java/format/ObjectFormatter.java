@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.java.model;
+package org.geoint.acetate.java.format;
 
-import org.geoint.acetate.java.model.DomainEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import org.geoint.acetate.TypeInstance;
+import org.geoint.acetate.format.Format;
+import org.geoint.acetate.format.TypeFormat;
+import org.geoint.acetate.format.TypeFormattingException;
 
 /**
  *
  * @author steve_siebert
  */
-@DomainEvent(namespace = MockAnnotatedResource.MOCK_NAMESPACE,
-        version = MockAnnotatedResource.MOCK_VERSION,
-        type = "MockOperationResponse")
-public class MockAnnotatedEvent {
+public interface ObjectFormatter<T> {
 
+    boolean supports(TypeFormat format);
+
+    void format(Format format, T obj, TypeInstance instance, OutputStream out)
+            throws IOException, TypeFormattingException;
 }

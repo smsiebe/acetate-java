@@ -36,11 +36,13 @@ import java.lang.annotation.Target;
 public @interface Operation {
 
     /**
-     * Specifies the operation name.
+     * Optional resource operation name.
+     * <p>
+     * If this isn't defined the method name is used.
      *
      * @return public domain operation name
      */
-    String name();
+    String name() default "";
 
     /**
      * Optional operation description.

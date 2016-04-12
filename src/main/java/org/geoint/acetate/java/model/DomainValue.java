@@ -20,6 +20,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.java.format.ObjectFormatter;
+import org.geoint.acetate.java.format.ObjectParser;
 
 /**
  * Identifies a java class as a domain data value.
@@ -32,31 +34,34 @@ import java.lang.annotation.Target;
 public @interface DomainValue {
 
     /**
-     * DomainResource namespace.
+     * Domain namespace.
      *
      * @return domain namespace
      */
     String namespace();
 
     /**
-     * Resource version.
+     * Domain version.
      *
      * @return version as string
      */
     String version();
 
     /**
-     * DomainResource-unique version type.
+     * Domain-unique version type.
      *
      * @return version type
      */
     String type();
 
     /**
-     * Optional resource description.
+     * Optional description of the domain value.
      *
-     * @return optional resource description.
+     * @return optional description.
      */
     String description() default "";
 
+    Class<? extends ObjectFormatter> defaultFormatter();
+
+    Class<? extends ObjectParser> defaultParser();
 }
