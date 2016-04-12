@@ -25,6 +25,7 @@ import org.geoint.acetate.format.TypeFormattingException;
 /**
  *
  * @author steve_siebert
+ * @param <T>
  */
 public interface ObjectFormatter<T> {
 

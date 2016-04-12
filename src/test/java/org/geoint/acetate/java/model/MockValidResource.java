@@ -36,37 +36,37 @@ public class MockValidResource {
 
     
     public static final String OPERTION_NO_PARAM_NAME = "operationNoParam";
-    /*
-     * resource operation without parameters
-    */
-    @Operation
-    public MockValidEvent operationNoParam() {
-        return new MockValidEvent();
-    }
-
-    public static final String OPERATION_OVERRIDE_NAME = "fancyOperationName";
-    /*
-     * resource operation whoes name is override through annotation
-    */
-    @Operation(name=OPERATION_OVERRIDE_NAME)
-    public MockValidEvent overriddenName() {
-        return new MockValidEvent();
-    }
+//    /*
+//     * resource operation without parameters
+//    */
+//    @Operation
+//    public MockValidEvent operationNoParam() {
+//        return new MockValidEvent();
+//    }
+//
+//    public static final String OPERATION_OVERRIDE_NAME = "fancyOperationName";
+//    /*
+//     * resource operation whoes name is override through annotation
+//    */
+//    @Operation(name=OPERATION_OVERRIDE_NAME)
+//    public MockValidEvent overriddenName() {
+//        return new MockValidEvent();
+//    }
     
-//    public static final String ACCESSOR_MAP = "map";
+    public static final String ACCESSOR_MAP = "map";
 //    @Accessor(name = ACCESSOR_MAP)
 //    public Map<String, Integer> map() {
 //        return Collections.EMPTY_MAP;
 //    }
 //
     
-//    public static final String ACCESSOR_ARRAY = "array";
+    public static final String ACCESSOR_ARRAY = "array";
 //    @Accessor(name = ACCESSOR_ARRAY)
 //    public String[] array() {
 //        return new String[0];
 //    }
 //
-//    public static final String ACCESSOR_COLLECTION = "collection";
+    public static final String ACCESSOR_COLLECTION = "collection";
 //    @Accessor(name = ACCESSOR_COLLECTION)
 //    public Collection<String> collection() {
 //        return Collections.EMPTY_LIST;

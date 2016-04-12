@@ -21,7 +21,24 @@ package org.geoint.acetate.java.model;
  */
 @DomainEvent(namespace = MockDomainConstants.MOCK_NAMESPACE,
         version = MockDomainConstants.MOCK_VERSION,
-        type = "MockOperationResponse")
+        type = MockValidEvent.EVENT_TYPE_NAME)
 public class MockValidEvent {
+
+    public static final String EVENT_TYPE_NAME = "MockEvent";
+    private final MockValidValue myValue;
+
+    public MockValidEvent() {
+        this.myValue = new MockValidValue();
+    }
+
+    public MockValidEvent(MockValidValue myValue) {
+        this.myValue = myValue;
+    }
+
+    public static final String EVENT_COMPOSITE_NAME = "mockValue";
+    @Accessor(name = EVENT_COMPOSITE_NAME)
+    public MockValidValue getMyValue() {
+        return myValue;
+    }
 
 }

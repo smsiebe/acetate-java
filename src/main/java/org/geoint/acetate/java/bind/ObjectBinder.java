@@ -22,7 +22,7 @@ import org.geoint.acetate.TypeInstance;
  * Binds a resource to a java object.
  * <p>
  * Implementations may be generic, such as a binder based on POJO data modeling,
- * or may be resource (class)-specific to support unique binding requirements.
+ * or may be class/type-specific to support unique binding requirements.
  *
  * @author steve_siebert
  * @param <T> java class representation of a resource

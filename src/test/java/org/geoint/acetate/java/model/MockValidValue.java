@@ -41,11 +41,12 @@ import org.geoint.acetate.model.DomainType;
  */
 @DomainValue(namespace = MockDomainConstants.MOCK_NAMESPACE,
         version = MockDomainConstants.MOCK_VERSION,
-        type = "MockOperationResponse",
+        type = MockValidValue.MOCK_VALUE_TYPE,
         defaultFormatter = MockValidValueBinaryFormatter.class,
         defaultParser = MockValidValueBinaryParser.class)
 public class MockValidValue {
 
+    public static final String MOCK_VALUE_TYPE = "MockValue";
     public static final int DEFAULT_VALUE = 97;
     private final int intValue;
 

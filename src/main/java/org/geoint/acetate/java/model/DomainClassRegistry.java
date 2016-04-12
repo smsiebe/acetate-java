@@ -16,9 +16,9 @@
 package org.geoint.acetate.java.model;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +28,9 @@ import org.geoint.acetate.TypeInstance;
 import org.geoint.acetate.format.TypeFormat;
 import org.geoint.acetate.format.TypeFormatter;
 import org.geoint.acetate.format.TypeParser;
+import org.geoint.acetate.format.UnsupportedFormatException;
+import org.geoint.acetate.format.spi.FormatFactory;
+import org.geoint.acetate.format.spi.FormatServiceLoaderProvider;
 import org.geoint.acetate.java.bind.ObjectBinder;
 import org.geoint.acetate.java.format.ObjectFormatter;
 import org.geoint.acetate.java.format.ObjectParser;
@@ -54,23 +57,42 @@ public class DomainClassRegistry {
     protected final HierarchicalTypeResolver<TypeDescriptor> typeResolver; //read
     private final Map<TypeDescriptor, ObjectBinder> typeBinders;
     private final Set<ObjectBinder> defaultBinders;
-    private final Map<TypeDescriptor, TypeFormatter> typeFormatters;
-    private final Map<TypeDescriptor, TypeParser> typeParsers;
+    private final FormatFactory formatFactory;
     private final Map<Class<?>, ObjectFormatter> objectFormatters;
     private final Map<Class<?>, ObjectParser> objectParsers;
 
+    public DomainClassRegistry() {
+        this.localRegistry = new MapTypeResolver<>(new ConcurrentHashMap<>());
+        this.typeResolver = HierarchicalTypeResolver.newHierarchy(localRegistry);
+        this.classDescriptors = BidirectionalMap.newMap(() -> new HashMap<>());
+        typeBinders = new ConcurrentHashMap<>();
+        defaultBinders = Collections.synchronizedSet(new HashSet<>());
+        this.objectFormatters = new ConcurrentHashMap<>();
+        this.objectParsers = new ConcurrentHashMap<>();
+
+        this.formatFactory = FormatFactory.getDefaultFactory();
+        this.formatFactory.addProvider(new FormatServiceLoaderProvider());
+    }
+
     public DomainClassRegistry(BidirectionalMap<Class<?>, TypeDescriptor> classDescriptors,
             DomainTypeResolver<TypeDescriptor> typeResolver) {
+        this(classDescriptors, typeResolver, FormatFactory.getDefaultFactory());
+    }
+
+    public DomainClassRegistry(BidirectionalMap<Class<?>, TypeDescriptor> classDescriptors,
+            DomainTypeResolver<TypeDescriptor> typeResolver,
+            FormatFactory formatFactory) {
         this.localRegistry = new MapTypeResolver<>(new ConcurrentHashMap<>());
         this.typeResolver = HierarchicalTypeResolver.newHierarchy(typeResolver)
                 .addChild(localRegistry);
         this.classDescriptors = classDescriptors;
         typeBinders = new ConcurrentHashMap<>();
-        typeFormatters = new ConcurrentHashMap<>();
-        typeParsers = new ConcurrentHashMap<>();
         defaultBinders = Collections.synchronizedSet(new HashSet<>());
         this.objectFormatters = new ConcurrentHashMap<>();
         this.objectParsers = new ConcurrentHashMap<>();
+
+        this.formatFactory = formatFactory;
+        this.formatFactory.addProvider(new FormatServiceLoaderProvider());
     }
 
     public void register(Class<?> domainClass) throws InvalidModelException {
@@ -128,12 +150,8 @@ public class DomainClassRegistry {
         ClassTypeReflector.parsers(domainClass, (p) -> objectParsers.put(domainClass, p));
     }
 
-    public void register(TypeFormat format, TypeFormatter formatter) {
-        typeFormatters.putIfAbsent(format.getTypeDescriptor(), formatter);
-    }
-
-    public void register(TypeFormat format, TypeParser parser) {
-        typeParsers.putIfAbsent(format.getTypeDescriptor(), parser);
+    public FormatFactory getFormatFactory() {
+        return formatFactory;
     }
 
     public void register(TypeDescriptor td, ObjectBinder binder) {
@@ -153,20 +171,14 @@ public class DomainClassRegistry {
                 .map((td) -> typeResolver.resolveType(td).orElse(null));
     }
 
-    public Optional<TypeParser> findParser(TypeFormat format) {
-        return typeParsers.entrySet().stream()
-                .filter((e) -> e.getKey().equals(format.getTypeDescriptor()))
-                .map(Entry::getValue)
-                .filter((p) -> p.supports(format))
-                .findFirst();
+    public TypeParser findParser(TypeFormat format)
+            throws UnsupportedFormatException {
+        return formatFactory.getParser(format);
     }
 
-    public Optional<TypeFormatter> findFormatter(TypeFormat format) {
-        return typeFormatters.entrySet().stream()
-                .filter((e) -> e.getKey().equals(format.getTypeDescriptor()))
-                .map(Entry::getValue)
-                .filter((f) -> f.supports(format))
-                .findFirst();
+    public TypeFormatter findFormatter(TypeFormat format)
+            throws UnsupportedFormatException {
+        return formatFactory.getFormatter(format);
     }
 
     /**

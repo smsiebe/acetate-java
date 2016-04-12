@@ -25,41 +25,41 @@ import static org.junit.Assert.*;
  * @author steve_siebert
  */
 public class ReflectUtilTest {
-//
+
 //    @Test
 //    public void testIsMultiArray() throws Exception {
 //        Type arrayType = getMockAccessorType(MockValidResource.ACCESSOR_ARRAY);
-//        assertTrue(DomainReflectionUtil.isMulti(arrayType));
+//        assertTrue(ClassTypeReflector.isMulti(arrayType));
 //    }
 //
 //    @Test
 //    public void testIsMultiCollection() throws Exception {
 //        Type collectionType = getMockAccessorType(MockValidResource.ACCESSOR_COLLECTION);
-//        assertTrue(DomainReflectionUtil.isMulti(collectionType));
+//        assertTrue(ClassTypeReflector.isMulti(collectionType));
 //    }
 //
 //    @Test
 //    public void testIsMultiMap() throws Exception {
 //        Type mapType = getMockAccessorType(MockValidResource.ACCESSOR_MAP);
-//        assertTrue(DomainReflectionUtil.isMulti(mapType));
+//        assertTrue(ClassTypeReflector.isMulti(mapType));
 //    }
 //
 //    @Test
 //    public void testIsMap() throws Exception {
 //        Type mapType = getMockAccessorType(MockValidResource.ACCESSOR_MAP);
-//        assertTrue(DomainReflectionUtil.isMap(mapType));
+//        assertTrue(ClassTypeReflector.isMap(mapType));
 //    }
 //
 //    @Test
 //    public void testIsArray() throws Exception {
 //        Type arrayType = getMockAccessorType(MockValidResource.ACCESSOR_ARRAY);
-//        assertTrue(DomainReflectionUtil.isArray(arrayType));
+//        assertTrue(ClassTypeReflector.isArray(arrayType));
 //    }
 //
 //    @Test
 //    public void testIsCollection() throws Exception {
 //        Type collectionType = getMockAccessorType(MockValidResource.ACCESSOR_COLLECTION);
-//        assertTrue(DomainReflectionUtil.isCollection(collectionType));
+//        assertTrue(ClassTypeReflector.isCollection(collectionType));
 //    }
 //
 //    @Test
