@@ -61,7 +61,7 @@ public @interface DomainValue {
      */
     String description() default "";
 
-    Class<? extends ObjectFormatter> defaultFormatter();
-
-    Class<? extends ObjectParser> defaultParser();
+//    Class<? extends ObjectFormatter> defaultFormatter();
+//
+//    Class<? extends ObjectParser> defaultParser();
 }

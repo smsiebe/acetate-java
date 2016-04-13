@@ -15,15 +15,10 @@
  */
 package org.geoint.acetate.java.model.reflect;
 
-import java.util.Optional;
 import org.geoint.acetate.java.model.DomainClassRegistry;
 import org.geoint.acetate.java.model.MockDomainConstants;
-import org.geoint.acetate.java.model.MockValidEvent;
 import org.geoint.acetate.java.model.MockValidValue;
 import org.geoint.acetate.model.DomainBuilder;
-import org.geoint.acetate.model.EventType;
-import org.geoint.acetate.model.NamedRef;
-import org.geoint.acetate.model.NamedTypeRef;
 import org.geoint.acetate.model.ValueType;
 import org.junit.Test;
 import static org.junit.Assert.*;
